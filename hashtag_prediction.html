@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Image Hashtag Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag Prediction | Cognitive AI Spaces</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css"></noscript>
+    <style>
+        .inner h1, .inner h2, .inner p {
+            color: #ffffff;
+        }
+        .inner {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .button {
+            background-color: #ff6f61;
+            border: none;
+            color: white;
+            padding: 1px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #ff4a3d;
+        }
+        .image img {
+            border-radius: 10px;
+        }
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JMWZ93NWE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JMWZ93NWE4');
+</script>
+<body>
+    <div id="wrapper">
+
+        <!-- Intro -->
+        <section id="intro" class="wrapper style1 fullscreen fade-up">
+            <div class="inner">
+                <h1>Hashtag Prediction</h1>
+                <p>Predict the best hashtags for your images based on user interests, industry trends and advanced Machine Learning and Vision models.</p>
+                <div id="inputSelection">
+                    <label><input type="radio" name="inputType" value="image" checked></label>
+                </div>
+                <input type="file" id="imageInput" accept="image/*">
+                <button id="submitButton" class="button">Process Image</button>
+                <img id="imageDisplay" style="display:none;">
+                <div id="loadingIndicator">
+                    <p>Loading...</p>
+                </div>
+                <div class="hashtag-container">
+                    <canvas id="outputCanvas"></canvas>
+                    <div id="classOutput"></div>
+                </div>
+            </br>
+        </br>
+
+                <button onclick="window.location.href='index2.html'" class="button">Back to Home</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- <h1>Real-Time Image Hashtag Prediction</h1>
+    <div id="inputSelection">
+        <label><input type="radio" name="inputType" value="image"> Image</label>
+    </div>
+    
+    <div id="videoContainer">
+        <video id="videoElement" autoplay playsinline></video>
+        <div id="infoBox" class="infoBox">
+            <p><strong>Detected Object:</strong> <span id="objectLabel"></span></p>
+            <p><strong>Confidence:</strong> <span id="confidenceScore"></span></p>
+        </div>
+    </div>
+
+    <input type="file" id="imageInput" accept="image/*" style="display:none;">
+
+    <img id="imageDisplay">
+
+    <canvas id="outputCanvas"></canvas>
+
+    <div id="classOutput"></div>
+
+    
+
+    <div id="loadingIndicator">Loading...</div> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest"></script>
+    <script src="https://unpkg.com/@tensorflow-models/mobilenet@2.0.4" type="text/javascript"></script>
+
+    <script src="script2.js"></script>
+</body>
+</html>

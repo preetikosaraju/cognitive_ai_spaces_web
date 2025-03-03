@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Thumbnail Generation | Cognitive AI Spaces</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .inner h1, .inner h2, .inner p {
+            color: #ffffff;
+        }
+        .inner {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .button {
+            background-color: #ff6f61;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #ff4a3d;
+        }
+        #videoDisplay, #outputCanvas {
+            max-width: 100%;
+            max-height: 30vh; /* 30% of the viewport height */
+            height: auto;
+            display: none;
+        }
+        #outputCanvas {
+            border: 2px solid #ccc;
+            margin-top: 20px;
+        }
+        .thumbnail-container {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .thumbnail-container p {
+            margin: 10px 0;
+        }
+        .thumbnail-container button {
+            margin: 10px 5px;
+        }
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JMWZ93NWE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JMWZ93NWE4');
+</script>
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Intro -->
+        <section id="intro" class="wrapper style1 fullscreen fade-up">
+            <div class="inner">
+                <h1>Thumbnail Generation</h1>
+                <p>Generate the most engaging thumbnails for your videos using advanced AI algorithms.</p>
+                <div id="inputSelection">
+                    <label><input type="radio" name="inputType" value="video" checked> Video</label>
+                </div>
+                <input type="file" id="videoInput" accept="video/*">
+                <input type="text" id="textInput" placeholder="Enter text to overlay on thumbnail">
+                <button id="submitButton" class="button">Submit</button>
+
+                <video id="videoDisplay" controls loop></video>
+                <div id="loadingIndicator">
+                    <p>Loading...</p>
+                </div>
+                <div class="thumbnail-container">
+                    <canvas id="outputCanvas"></canvas>
+                    <button id="downloadButton" style="display:none;">Download Thumbnail (1080x1920 for Instagram)</button>
+                </div>
+            </br>
+        </br>
+                <button onclick="window.location.href='index2.html'" class="button">Back to Home</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const file = document.getElementById('videoInput').files[0];
+            if (!file) return alert('Please select a valid file.');
+
+            const mediaUrl = URL.createObjectURL(file);
+            const videoDisplay = document.getElementById('videoDisplay');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            videoDisplay.src = mediaUrl;
+            videoDisplay.style.display = 'block';
+            loadingIndicator.style.display = 'block';
+            videoDisplay.onloadedmetadata = () => {
+                videoDisplay.play();
+                videoDisplay.currentTime = videoDisplay.duration / 2; 
+                setTimeout(() => {
+                    captureThumbnail(videoDisplay);
+                    loadingIndicator.style.display = 'none';
+                }, 1000); // Capture thumbnail after 1 second
+            };
+        });
+
+        function captureThumbnail(videoElement) {
+            const canvas = document.getElementById('outputCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'block';
+            console.log("Thumbnail captured");
+
+            // Check for blur and select the best frame
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const isBlurred = checkForBlur(imageData);
+            const isDramatic = checkForDramatic(imageData);
+            if (!isBlurred && isDramatic) {
+                addTextToCanvas(canvas, ctx);
+                document.getElementById('downloadButton').style.display = 'block';
+            }
+        }
+
+        function checkForBlur(imageData) {
+            // Implement a simple blur detection algorithm
+            // This is a placeholder function, you can replace it with a more sophisticated algorithm
+            const data = imageData.data;
+            let sum = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const brightness = (r + g + b) / 3;
+                sum += brightness;
+            }
+            const averageBrightness = sum / (data.length / 4);
+            return averageBrightness < 50; // Example threshold for blur detection
+        }
+
+        function checkForDramatic(imageData) {
+            // Implement a simple dramatic detection algorithm
+            // This is a placeholder function, you can replace it with a more sophisticated algorithm
+            const data = imageData.data;
+            let maxContrast = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const brightness = (r + g + b) / 3;
+                const contrast = Math.abs(brightness - 128); // Example contrast calculation
+                if (contrast > maxContrast) {
+                    maxContrast = contrast;
+                }
+            }
+            return maxContrast > 50; // Example threshold for dramatic detection
+        }
+
+        function resizeAndPadCanvas(canvas, width, height) {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+
+            const aspectRatio = canvas.width / canvas.height;
+            const targetAspectRatio = width / height;
+
+            let dx, dy, dWidth, dHeight;
+            if (aspectRatio > targetAspectRatio) {
+                // Pad the top and bottom
+                dWidth = width;
+                dHeight = width / aspectRatio;
+                dx = 0;
+                dy = (height - dHeight) / 2;
+            } else {
+                // Pad the sides
+                dHeight = height;
+                dWidth = height * aspectRatio;
+                dx = (width - dWidth) / 2;
+                dy = 0;
+            }
+
+            tempCtx.fillStyle = 'black';
+            tempCtx.fillRect(0, 0, width, height);
+            tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, dx, dy, dWidth, dHeight);
+            return tempCanvas;
+        }
+
+        function addTextToCanvas(canvas, ctx) {
+            const text = document.getElementById('textInput').value;
+            if (text) {
+                ctx.font = '100px sans-serif'; // Larger text size
+                ctx.lineWidth = 2;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Calculate the position to avoid obstructing important parts
+                const x = canvas.width / 2;
+                const y = canvas.height - 100; // Position text at the bottom
+
+                // Determine the background color to set the text color dynamically
+                const backgroundColor = ctx.getImageData(x, y, 1, 1).data;
+                const brightness = (backgroundColor[0] * 0.299 + backgroundColor[1] * 0.587 + backgroundColor[2] * 0.114);
+                if (brightness > 128) {
+                    ctx.fillStyle = 'black';
+                    ctx.strokeStyle = 'white';
+                } else {
+                    ctx.fillStyle = 'white';
+                    ctx.strokeStyle = 'black';
+                }
+
+                ctx.strokeText(text, x, y);
+                ctx.fillText(text, x, y);
+            }
+        }
+
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            const canvas = document.getElementById('outputCanvas');
+            const instagramThumbnail = resizeAndPadCanvas(canvas, 1080, 1920); // Instagram reels size
+
+            const instagramLink = document.createElement('a');
+            instagramLink.href = instagramThumbnail.toDataURL('image/png');
+            instagramLink.download = 'instagram_thumbnail.png';
+            instagramLink.click();
+        });
+    </script>
+</body>
+</html>
